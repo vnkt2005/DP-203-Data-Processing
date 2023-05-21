@@ -1,0 +1,28 @@
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import monotonically_increasing_id
+
+# Create a SparkSession
+spark = SparkSession.builder \
+    .appName("Round-Robin Join") \
+    .getOrCreate()
+
+# Define sample data for DataFrame 1
+data1 = [("John", 25), ("Alice", 30), ("Bob", 35)]
+df1 = spark.createDataFrame(data1, ["Name", "Age"])
+
+# Define sample data for DataFrame 2
+data2 = [("New York"), ("San Francisco"), ("Chicago"), ("Seattle")]
+df2 = spark.createDataFrame(data2, ["City"])
+
+# Assign a unique ID column for each DataFrame
+df1 = df1.withColumn("id", monotonically_increasing_id())
+df2 = df2.withColumn("id", monotonically_increasing_id())
+
+# Calculate the number of partitions based on the smaller DataFrame
+num_partitions = min(df1.rdd.getNumPartitions(), df2.rdd.getNumPartitions())
+
+# Join the DataFrames based on the ID column using round-robin distribution
+joined_df = df1.join(df2, "id").repartition(num_partitions)
+
+# Show the joined DataFrame
+joined_df.show()
