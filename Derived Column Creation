@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, concat, lit
+from pyspark.sql.functions import col, concat, lit, when
 
 # Create a SparkSession
 spark = SparkSession.builder \
@@ -16,8 +16,7 @@ df = spark.createDataFrame(data, ["Name", "Age"])
 df_with_full_name = df.withColumn("Full_Name", concat(col("Name"), lit(" Doe")))
 
 # Create a derived column based on a condition
-df_with_category = df.withColumn("Category", 
-                                 (col("Age") >= 30).when("Old").otherwise("Young"))
+df_with_category = df.withColumn("Category", when(col("Age") >= 30,"Old").otherwise("Young"))
 
 # Show the DataFrame with derived columns
 df_with_full_name.show()
