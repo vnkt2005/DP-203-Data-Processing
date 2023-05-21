@@ -1,0 +1,45 @@
+#WRITING FILE TO PARQUET
+
+from pyspark.sql import SparkSession
+
+# Create a SparkSession
+spark = SparkSession.builder \
+    .appName("Write DataFrame to Parquet") \
+    .getOrCreate()
+
+# Create a sample DataFrame
+data = [("John", 25), ("Alice", 30), ("Bob", 35)]
+df = spark.createDataFrame(data, ["Name", "Age"])
+
+# Specify the path to write the Parquet file
+#output_path = "path_to_output_parquet_file"
+output_path = "data/output.parquet"
+
+# Write the DataFrame to Parquet
+df.write.parquet(output_path, mode="overwrite")
+
+
+
+
+#TO VIEW FILES IN DATABRICKS
+%fs ls
+%fs ls data
+
+
+
+
+#READING PARQUET FILE TO DATAFRAME
+
+from pyspark.sql import SparkSession
+
+# Create a SparkSession
+spark = SparkSession.builder \
+    .appName("Read Parquet File") \
+    .getOrCreate()
+
+# Specify the path to the Parquet file
+parquet_path = "dbfs:/data/output.parquet/"
+
+# Read the Parquet file into a DataFrame
+df = spark.read.parquet(parquet_path)
+df.show()
