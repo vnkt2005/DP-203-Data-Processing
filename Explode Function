@@ -1,0 +1,24 @@
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.functions.{col, explode}
+
+// Create a SparkSession
+val spark = SparkSession.builder()
+  .appName("Complex Data Processing")
+  .master("local[*]") // Set the Spark master URL
+  .getOrCreate()
+
+// Define some sample data
+val data = Seq(
+  ("John", "New York", Seq("Java", "Scala", "Python")),
+  ("Alice", "San Francisco", Seq("C++", "Java", "Go")),
+  ("Bob", "Chicago", Seq("Python", "R", "Scala"))
+)
+
+// Convert the sample data to a DataFrame
+val df = spark.createDataFrame(data).toDF("Name", "City", "Languages")
+
+// Explode the 'Languages' array column
+val explodedDF = df.select(col("Name"), col("City"), explode(col("Languages")).as("Language"))
+
+// Show the exploded DataFrame
+explodedDF.show()
