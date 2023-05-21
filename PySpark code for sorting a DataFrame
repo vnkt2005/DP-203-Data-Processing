@@ -1,0 +1,28 @@
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col
+
+# Create a SparkSession
+spark = SparkSession.builder \
+    .appName("DataFrame Sorting") \
+    .getOrCreate()
+
+# Define some sample data
+data = [("John", 25), ("Alice", 30), ("Bob", 35), ("David", 28), ("Emma", 32),
+        ("Frank", 40), ("Grace", 27), ("Henry", 38), ("Isabella", 31), ("Jack", 29),
+        ("Kate", 34), ("Leo", 33), ("Mia", 26), ("Noah", 36), ("Olivia", 39),
+        ("Peter", 37), ("Quinn", 24), ("Ryan", 41), ("Sara", 23), ("Tom", 42),
+        ("Uma", 43), ("Violet", 22), ("William", 44), ("Xavier", 45), ("Yara", 21),
+        ("Zoe", 46), ("Adam", 47), ("Ben", 48), ("Cara", 49), ("Daniel", 50),
+        ("Eva", 51), ("Felix", 52), ("Gina", 53), ("Harry", 54), ("Ivy", 55),
+        ("Jake", 56), ("Kelly", 57), ("Liam", 58), ("Megan", 59), ("Nathan", 60),
+        ("Oscar", 61), ("Penny", 62), ("Quentin", 63), ("Rachel", 64), ("Sam", 65),
+        ("Thomas", 66), ("Ursula", 67), ("Vince", 68), ("Wendy", 69), ("Xander", 70)]
+
+# Convert the sample data to a DataFrame
+df = spark.createDataFrame(data, ["Name", "Age"])
+
+# Sort the DataFrame by the "Age" column in ascending order
+sorted_df = df.sort(col("Age"))
+
+# Show the sorted DataFrame
+sorted_df.show()
