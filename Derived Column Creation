@@ -1,0 +1,24 @@
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, concat, lit
+
+# Create a SparkSession
+spark = SparkSession.builder \
+    .appName("Derived Column Creation") \
+    .getOrCreate()
+
+# Define some sample data
+data = [("John", 25), ("Alice", 30), ("Bob", 35)]
+
+# Convert the sample data to a DataFrame
+df = spark.createDataFrame(data, ["Name", "Age"])
+
+# Create a derived column using concatenation
+df_with_full_name = df.withColumn("Full_Name", concat(col("Name"), lit(" Doe")))
+
+# Create a derived column based on a condition
+df_with_category = df.withColumn("Category", 
+                                 (col("Age") >= 30).when("Old").otherwise("Young"))
+
+# Show the DataFrame with derived columns
+df_with_full_name.show()
+df_with_category.show()
