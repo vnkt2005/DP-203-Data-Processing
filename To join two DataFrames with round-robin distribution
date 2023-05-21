@@ -6,23 +6,22 @@ spark = SparkSession.builder \
     .appName("Round-Robin Join") \
     .getOrCreate()
 
-# Define sample data for DataFrame 1
+# Define some sample data for DataFrame 1
 data1 = [("John", 25), ("Alice", 30), ("Bob", 35)]
 df1 = spark.createDataFrame(data1, ["Name", "Age"])
 
-# Define sample data for DataFrame 2
-data2 = [("New York"), ("San Francisco"), ("Chicago"), ("Seattle")]
+# Define some sample data for DataFrame 2
+data2 = [("New York",), ("San Francisco",), ("Chicago",), ("Los Angeles",)]
 df2 = spark.createDataFrame(data2, ["City"])
 
-# Assign a unique ID column for each DataFrame
-df1 = df1.withColumn("id", monotonically_increasing_id())
-df2 = df2.withColumn("id", monotonically_increasing_id())
+# Generate a unique ID column for DataFrame 1
+df1_with_id = df1.withColumn("id", monotonically_increasing_id())
 
-# Calculate the number of partitions based on the smaller DataFrame
-num_partitions = min(df1.rdd.getNumPartitions(), df2.rdd.getNumPartitions())
+# Generate a unique ID column for DataFrame 2
+df2_with_id = df2.withColumn("id", monotonically_increasing_id())
 
-# Join the DataFrames based on the ID column using round-robin distribution
-joined_df = df1.join(df2, "id").repartition(num_partitions)
+# Join the DataFrames based on the generated ID column
+joined_df = df1_with_id.join(df2_with_id, "id", "inner").drop("id")
 
 # Show the joined DataFrame
 joined_df.show()
