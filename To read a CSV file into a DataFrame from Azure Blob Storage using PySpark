@@ -1,0 +1,76 @@
+from pyspark.sql import SparkSession
+
+# Create a SparkSession
+spark = SparkSession.builder \
+    .appName("Read CSV from Azure Blob Storage") \
+    .getOrCreate()
+
+# Set your Azure Blob Storage account details
+storage_account_name = "your_storage_account_name"
+storage_account_access_key = "your_storage_account_access_key"
+container_name = "your_container_name"
+csv_file_path = "your_csv_file_path"
+
+# Define the storage configuration for Azure Blob Storage
+storage_config = f"fs.azure.account.key.{storage_account_name}.blob.core.windows.net"
+spark.conf.set(storage_config, storage_account_access_key)
+
+# Read the CSV file into a DataFrame
+df = spark.read.csv(f"wasbs://{container_name}@{storage_account_name}.blob.core.windows.net/{csv_file_path}", header=True, inferSchema=True)
+
+
+
+
+
+
+
+
+
+
+#To write a DataFrame to Azure Blob Storage as a Parquet file using PySpark
+from pyspark.sql import SparkSession
+
+# Create a SparkSession
+spark = SparkSession.builder \
+    .appName("Write DataFrame to Azure Blob Storage") \
+    .getOrCreate()
+
+# Set your Azure Blob Storage account details
+storage_account_name = "your_storage_account_name"
+storage_account_access_key = "your_storage_account_access_key"
+container_name = "your_container_name"
+output_path = "your_output_path"
+
+# Define the storage configuration for Azure Blob Storage
+storage_config = f"fs.azure.account.key.{storage_account_name}.blob.core.windows.net"
+spark.conf.set(storage_config, storage_account_access_key)
+
+# Write the DataFrame to Azure Blob Storage as Parquet
+df.write.parquet(f"wasbs://{container_name}@{storage_account_name}.blob.core.windows.net/{output_path}", mode="overwrite")
+
+
+
+
+
+#To read a Parquet file into a DataFrame from Azure Blob Storage using PySpark
+
+from pyspark.sql import SparkSession
+
+# Create a SparkSession
+spark = SparkSession.builder \
+    .appName("Read Parquet from Azure Blob Storage") \
+    .getOrCreate()
+
+# Set your Azure Blob Storage account details
+storage_account_name = "your_storage_account_name"
+storage_account_access_key = "your_storage_account_access_key"
+container_name = "your_container_name"
+parquet_file_path = "your_parquet_file_path"
+
+# Define the storage configuration for Azure Blob Storage
+storage_config = f"fs.azure.account.key.{storage_account_name}.blob.core.windows.net"
+spark.conf.set(storage_config, storage_account_access_key)
+
+# Read the Parquet file into a DataFrame
+df = spark.read.parquet(f"wasbs://{container_name}@{storage_account_name}.blob.core.windows.net/{parquet_file_path}")
+
